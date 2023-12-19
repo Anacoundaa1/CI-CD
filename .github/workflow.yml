@@ -1,0 +1,11 @@
+name: Bonjour
+
+on:
+  - push
+
+
+jobs:
+  dire_bonjour:
+    runs-on: ubuntu-22.04
+    script:
+      - echo "Bonjour 👋"
