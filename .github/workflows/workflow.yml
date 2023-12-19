@@ -8,4 +8,4 @@ jobs:
   dire_bonjour:
     runs-on: ubuntu-22.04
     steps:
-      - run: echo "Bonjour �
+      - run: echo "Bonjour !"
