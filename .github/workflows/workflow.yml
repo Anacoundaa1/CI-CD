@@ -1,11 +1,32 @@
-name: Bonjour
+name: CI/CD Workflow
 
 on:
-  - push
+  pull_request:
+    branches:
+      - '*'
 
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
 
 jobs:
-  dire_bonjour:
-    runs-on: ubuntu-22.04
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'push' && github.ref_type == 'tag')
     steps:
-      - run: echo "Bonjour !"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installation des dépendances JavaScript
+        run:  npm install
+
+      - name: Lint du fichier index.js
+        run:  npm run lint-index
