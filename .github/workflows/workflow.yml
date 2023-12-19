@@ -7,5 +7,5 @@ on:
 jobs:
   dire_bonjour:
     runs-on: ubuntu-22.04
-    script:
-      - echo "Bonjour 👋"
+    steps:
+      - run: echo "Bonjour �
