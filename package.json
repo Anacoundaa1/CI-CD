@@ -9,6 +9,11 @@
     "start": "node index.js",
     "test": "jest"
   },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jshint": "^2.13.6",
+    "supertest": "^6.3.3"
+  },
   "author": "",
   "license": "ISC"
 }
