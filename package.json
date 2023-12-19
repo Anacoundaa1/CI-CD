@@ -1,0 +1,14 @@
+{
+  "name": "ci-cd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint-index": "jshint index.js",
+    "lint-test": "jshint ndex.js",
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC"
+}
