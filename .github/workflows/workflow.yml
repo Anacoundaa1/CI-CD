@@ -30,3 +30,22 @@ jobs:
 
       - name: Lint du fichier index.js
         run:  npm run lint-index
+
+  test-addition:
+    name: Test de addition.js
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'push' && github.ref_type == 'tag')
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installation des dépendances JavaScript
+        run:  npm install
+
+      - name: Test
+        run: npm test
