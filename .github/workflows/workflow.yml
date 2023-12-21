@@ -28,8 +28,8 @@ jobs:
       - name: Installation des dépendances JavaScript
         run:  npm install
 
-      - name: Lint du fichier index.js
-        run:  npm run lint-index
+      - name: Lint du fichier addition.js
+        run:  npm run lint-addition
 
   test-addition:
     name: Test de addition.js
@@ -50,14 +50,14 @@ jobs:
       - name: Test
         run: npm test
         
-      - name: Set GitHub status
-        if: always() # Cette étape doit toujours s'exécuter, même en cas d'échec du test
+      - name: Definition du statut GitHub
+        if: always()
         run: |
           if [ "${{ job.status }}" == "success" ]; then
-            echo "Tests succeeded"
+            echo "Le test a été réussi"
           else
-            echo "Tests failed"
-            exit 1 # Exit avec un code d'erreur pour indiquer que le test a échoué
+            echo "Le test a échoué"
+            exit 1
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

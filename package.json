@@ -2,10 +2,10 @@
   "name": "ci-cd",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/addition.js",
   "scripts": {
-    "lint-index": "jshint index.js",
-    "lint-test": "jshint ndex.js",
+    "lint-addition": "jshint src/addition.js",
+    "lint-test": "jshint test/test.js",
     "test": "jest"
   },
   "devDependencies": {
