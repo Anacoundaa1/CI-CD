@@ -8,10 +8,12 @@ on:
 jobs:
   merge:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        env:
+          GIT_ASKPASS: echo
 
       - name: Set version
         run: |
@@ -31,11 +33,12 @@ jobs:
 
           echo "$TAG_VERSION" > version.txt
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
-        shell: /usr/bin/bash -e {0}
 
-      - name: Create Tag
-        run: |
+          # Créer un tag et le pousser
           git tag -a $TAG_VERSION -m "Auto-generated tag for version $TAG_VERSION"
           git push origin $TAG_VERSION
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        shell: /usr/bin/bash -e {0}
+
+
+    
