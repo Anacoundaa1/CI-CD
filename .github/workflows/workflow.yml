@@ -106,7 +106,7 @@ jobs:
   deploiment-image:
     name: Push bastosstonsoss/b-m-ci-cd:latest
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    if: github.event_name == 'push'
     needs:
       - lint
       - test-addition
@@ -125,7 +125,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: bastosstonsoss
-          password: JeSaisPasCommentFaireSansRevelerMonMdp
+          password: ${{ secrets.PASSWORD_DOCKERHUB }}
 
       - name: Tag bastosstonsoss/b-m-ci-cd:${{github.ref_name}}
         run: docker tag bastosstonsoss/b-m-ci-cd:${{github.ref_name}} bastosstonsoss/b-m-ci-cd${{github.ref_name}}
