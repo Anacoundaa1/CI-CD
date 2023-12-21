@@ -25,7 +25,6 @@ jobs:
         run: |
           # Récupérer la dernière version du fichier (si elle existe)
           LAST_VERSION=$(cat version.txt 2>/dev/null || echo "1.0.0")
-          echo "LAST_VERSION: $LAST_VERSION"
           
           # Diviser la version en parties
           IFS='.' read -ra VERSION_PARTS <<< "$LAST_VERSION"
@@ -33,21 +32,11 @@ jobs:
           MINOR="${VERSION_PARTS[1]}"
           PATCH="${VERSION_PARTS[2]}"
 
-          echo "$MAJOR"
-          echo "$MINOR"
-          echo "$PATCH"
-
-
-          
           ((PATCH=PATCH+1))
-
-          echo "$PATCH"
           
-          # Créer le nouveau tag
           TAG_VERSION="$MAJOR.$MINOR.$PATCH"
           echo "TAG_VERSION: $TAG_VERSION"
-          
-          # Écrire la nouvelle version dans le fichier
+
           echo "$TAG_VERSION" > version.txt
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
         shell: /usr/bin/bash -e {0}
