@@ -3,16 +3,15 @@ name: CI/CD Workflow
 on:
   pull_request:
     branches:
-      - '*'
+      - "*"
 
   push:
     branches:
       - main
     tags:
-      - '*'
+      - "*"
 
 jobs:
-
   build:
     name: Construction
     runs-on: ubuntu-latest
@@ -51,6 +50,11 @@ jobs:
       - name: Lint du fichier addition.js
         run: npm run lint-addition
 
+      - name: Lint du fichier Dockerfile
+        uses: hadolint/hadolint-action@latest
+        with:
+          dockerfile: Dockerfile
+
   test-addition:
     name: Test de addition.js
     runs-on: ubuntu-latest
@@ -69,7 +73,7 @@ jobs:
 
       - name: Test
         run: npm test
-        
+
       - name: Definition du statut GitHub
         if: always()
         run: |
@@ -81,3 +85,50 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker-test:
+    name: Build and Run Dockerfile
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@latest
+
+      - name: Installation Docker
+        uses: docker/setup-buildx-action@latest
+
+      - name: Build bastoss bastosstonsoss/b-m-ci-cd:latest
+        run: docker build --rm -t bastosstonsoss/b-m-ci-cd:latest .
+
+      - name: Run bastosstonsoss/b-m-ci-cd:latest
+        run: docker run --name addition -p 3000:3000 -d bastosstonsoss/b-m-ci-cd:latest
+
+  deploy-image-tag:
+    name: Push bastosstonsoss/b-m-ci-cd:latest
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs:
+      - lint
+      - jest-test
+      - docker-test
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@latest
+
+      - name: Installation Docker
+        uses: docker/setup-buildx-action@latest
+
+      - name: Build bastosstonsoss/b-m-ci-cd:${{github.ref_name}}
+        run: docker build --rm -t bastosstonsoss/b-m-ci-cd:${{github.ref_name}} .
+
+      - name: Connexion Docker Hub
+        uses: docker/login-action@latest
+        with:
+          username: bastosstonsoss
+          password: JeSaisPasCommentFaireSansRevelerMonMdp
+
+      - name: Tag bastosstonsoss/b-m-ci-cd:${{github.ref_name}}
+        run: docker tag bastosstonsoss/b-m-ci-cd:${{github.ref_name}} bastosstonsoss/b-m-ci-cd${{github.ref_name}}
+
+      - name: Push bastosstonsoss/b-m-ci-cd:${{github.ref_name}}
+        run: docker push bastosstonsoss/b-m-ci-cd:${{github.ref_name}}
