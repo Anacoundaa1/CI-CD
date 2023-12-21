@@ -25,7 +25,8 @@ jobs:
         run: |
           LAST_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --max-count=1))
           if [ -z "$LAST_TAG" ]; then
-            TAG_VERSION="1.0.0"
+            LAST_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%Y%m%d%H%M%S')
+            TAG_VERSION="1.0.0-$LAST_COMMIT_DATE"
           else
             IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
             MAJOR="${VERSION_PARTS[0]}"
