@@ -40,7 +40,6 @@ jobs:
   deploiment-image:
     name: Push bastosstonsoss/b-m-ci-cd:latest
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
