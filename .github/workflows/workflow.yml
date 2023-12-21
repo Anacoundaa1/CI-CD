@@ -51,7 +51,7 @@ jobs:
         run: npm run lint-addition
 
       - name: Lint du fichier Dockerfile
-        uses: hadolint/hadolint-action@latest
+        uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Dockerfile
 
@@ -86,7 +86,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  docker-test:
+  test-docker:
     name: Build and Run Dockerfile
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -103,14 +103,14 @@ jobs:
       - name: Run bastosstonsoss/b-m-ci-cd:latest
         run: docker run --name addition -p 3000:3000 -d bastosstonsoss/b-m-ci-cd:latest
 
-  deploy-image-tag:
+  deploiment-image:
     name: Push bastosstonsoss/b-m-ci-cd:latest
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref_type == 'tag'
     needs:
       - lint
       - test-addition
-      - docker-test
+      - test-docker
     steps:
       - name: Checkout Repo
         uses: actions/checkout@latest
