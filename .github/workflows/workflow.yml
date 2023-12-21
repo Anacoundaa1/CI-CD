@@ -109,7 +109,7 @@ jobs:
     if: github.event_name == 'push' && github.ref_type == 'tag'
     needs:
       - lint
-      - jest-test
+      - test-addition
       - docker-test
     steps:
       - name: Checkout Repo
