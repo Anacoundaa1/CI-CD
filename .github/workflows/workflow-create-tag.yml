@@ -52,4 +52,4 @@ jobs:
           git tag -a $TAG_VERSION -m "Auto-generated tag for version $TAG_VERSION"
           git push origin $TAG_VERSION
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
