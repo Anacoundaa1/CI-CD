@@ -48,4 +48,26 @@ jobs:
         run:  npm install
 
       - name: Test
-        run: npm test
+        run: |
+        if npm test; then
+          echo "Test succeeded" # Le test a réussi
+          echo "::set-output name=test-result::success" # Définir un statut personnalisé
+        else
+          echo "Test failed" # Le test a échoué
+          echo "::set-output name=test-result::failure" # Définir un statut personnalisé
+          exit 1 # Exit avec un code d'erreur pour indiquer que le test a échoué
+        fi
+      - name: Set GitHub status
+        if: always() # Cette étape doit toujours s'exécuter, même en cas d'échec du test
+        run: |
+          if [ "${{ steps.test-addition.outputs.test-result }}" == "success" ]; then
+            echo "Tests succeeded"
+          else
+            echo "Tests failed"
+            exit 1 # Exit avec un code d'erreur pour indiquer que le test a échoué
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      
