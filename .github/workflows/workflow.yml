@@ -33,19 +33,19 @@ jobs:
           MINOR="${VERSION_PARTS[1]}"
           PATCH="${VERSION_PARTS[2]}"
 
-          echo "VERSION_PARTS[0]"
-          echo "VERSION_PARTS[1]"
-          echo "VERSION_PARTS[2]"
-          echo "MAJOR"
-          echo "MINOR"
-          echo "PATCH"
+          echo "$VERSION_PARTS[0]"
+          echo "$VERSION_PARTS[1]"
+          echo "$VERSION_PARTS[2]"
+          echo "$MAJOR"
+          echo "$MINOR"
+          echo "$PATCH"
 
 
           
           # Incrémenter le PATCH
           ((PATCH++))
 
-          echo "PATCH"
+          echo "$PATCH"
           
           # Créer le nouveau tag
           TAG_VERSION="$MAJOR.$MINOR.$PATCH"
