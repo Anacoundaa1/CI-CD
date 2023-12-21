@@ -15,6 +15,7 @@ jobs:
 
   tag:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -39,6 +40,11 @@ jobs:
 
           echo "$TAG_VERSION" > version.txt
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+
+          # Créer un tag et le pousser
+          git tag -a $TAG_VERSION -m "Auto-generated tag for version $TAG_VERSION"
+          git push origin $TAG_VERSION
+
         shell: /usr/bin/bash -e {0}
 
 
