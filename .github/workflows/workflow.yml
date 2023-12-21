@@ -15,7 +15,7 @@ jobs:
 
   tag:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -47,11 +47,10 @@ jobs:
 
         shell: /usr/bin/bash -e {0}
 
-
   build:
     name: Construction
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'push' && github.ref_type == 'tag')
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -62,7 +61,7 @@ jobs:
           node-version: 20
 
       - name: Installation des dépendances JavaScript
-        run:  npm install
+        run: npm install
 
       - name: Build
         run: npm run build
@@ -70,7 +69,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'push' && github.ref_type == 'tag')
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -81,15 +80,15 @@ jobs:
           node-version: 20
 
       - name: Installation des dépendances JavaScript
-        run:  npm install
+        run: npm install
 
       - name: Lint du fichier addition.js
-        run:  npm run lint-addition
+        run: npm run lint-addition
 
   test-addition:
     name: Test de addition.js
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'push' && github.ref_type == 'tag')
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -100,7 +99,7 @@ jobs:
           node-version: 20
 
       - name: Installation des dépendances JavaScript
-        run:  npm install
+        run: npm install
 
       - name: Test
         run: npm test
