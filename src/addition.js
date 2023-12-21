@@ -1,5 +1,7 @@
 function addNumbers(a, b) {
-    return a + b;
-  }
-  
-  module.exports = addNumbers;
+  return a + b;
+}
+
+module.exports = addNumbers;
+
+// test pour merge
