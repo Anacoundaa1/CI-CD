@@ -1,0 +1,41 @@
+name: Merge Workflow
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set version
+        run: |
+          # Récupérer la dernière version du fichier (si elle existe)
+          LAST_VERSION=$(cat version.txt 2>/dev/null || echo "1.0.0")
+          
+          # Diviser la version en parties
+          IFS='.' read -ra VERSION_PARTS <<< "$LAST_VERSION"
+          MAJOR="${VERSION_PARTS[0]}"
+          MINOR="${VERSION_PARTS[1]}"
+          PATCH="${VERSION_PARTS[2]}"
+
+          ((PATCH=PATCH+1))
+          
+          TAG_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "TAG_VERSION: $TAG_VERSION"
+
+          echo "$TAG_VERSION" > version.txt
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+        shell: /usr/bin/bash -e {0}
+
+      - name: Create Tag
+        run: |
+          git tag -a $TAG_VERSION -m "Auto-generated tag for version $TAG_VERSION"
+          git push origin $TAG_VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

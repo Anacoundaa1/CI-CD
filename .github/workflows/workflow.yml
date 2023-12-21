@@ -13,40 +13,6 @@ on:
 
 jobs:
 
-  tag:
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        env:
-          GIT_ASKPASS: echo
-
-      - name: Set version
-        run: |
-          # Récupérer la dernière version du fichier (si elle existe)
-          LAST_VERSION=$(cat version.txt 2>/dev/null || echo "1.0.0")
-          
-          # Diviser la version en parties
-          IFS='.' read -ra VERSION_PARTS <<< "$LAST_VERSION"
-          MAJOR="${VERSION_PARTS[0]}"
-          MINOR="${VERSION_PARTS[1]}"
-          PATCH="${VERSION_PARTS[2]}"
-
-          ((PATCH=PATCH+1))
-          
-          TAG_VERSION="$MAJOR.$MINOR.$PATCH"
-          echo "TAG_VERSION: $TAG_VERSION"
-
-          echo "$TAG_VERSION" > version.txt
-          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
-
-          # Créer un tag et le pousser
-          git tag -a $TAG_VERSION -m "Auto-generated tag for version $TAG_VERSION"
-          git push origin $TAG_VERSION
-
-        shell: /usr/bin/bash -e {0}
-
   build:
     name: Construction
     runs-on: ubuntu-latest
