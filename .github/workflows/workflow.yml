@@ -23,13 +23,24 @@ jobs:
 
       - name: Set version
         run: |
-          # Récupérer le hash court du commit
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          
-          # Créer un tag basé sur la date et le hash du commit
-          TAG_VERSION="1.0.0-$COMMIT_HASH"
-          
+          # Récupérer la dernière version du fichier (si elle existe)
+          LAST_VERSION=$(cat version.txt 2>/dev/null || echo "1.0.0")
+
+          # Diviser la version en parties
+          IFS='.' read -ra VERSION_PARTS <<< "$LAST_VERSION"
+          MAJOR="${VERSION_PARTS[0]}"
+          MINOR="${VERSION_PARTS[1]}"
+          PATCH="${VERSION_PARTS[2]}"
+
+          # Incrémenter le PATCH
+          ((PATCH++))
+
+          # Créer le nouveau tag
+          TAG_VERSION="$MAJOR.$MINOR.$PATCH"
+
+          # Écrire la nouvelle version dans le fichier
           echo "TAG_VERSION: $TAG_VERSION"
+          echo "$TAG_VERSION" > version.txt
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
 
 
