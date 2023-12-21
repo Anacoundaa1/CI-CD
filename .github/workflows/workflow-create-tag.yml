@@ -58,10 +58,6 @@ jobs:
     name: Push bastosstonsoss/b-m-ci-cd:latest
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    needs:
-      - lint
-      - test-addition
-      - test-docker
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
