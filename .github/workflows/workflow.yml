@@ -12,6 +12,55 @@ on:
       - '*'
 
 jobs:
+
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        env:
+          GIT_ASKPASS: echo
+
+      - name: Set version
+        run: |
+          # Récupérer la dernière version du fichier (si elle existe)
+          LAST_VERSION=$(cat version.txt 2>/dev/null || echo "1.0.0")
+          
+          # Diviser la version en parties
+          IFS='.' read -ra VERSION_PARTS <<< "$LAST_VERSION"
+          MAJOR="${VERSION_PARTS[0]}"
+          MINOR="${VERSION_PARTS[1]}"
+          PATCH="${VERSION_PARTS[2]}"
+
+          ((PATCH=PATCH+1))
+          
+          TAG_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "TAG_VERSION: $TAG_VERSION"
+
+          echo "$TAG_VERSION" > version.txt
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+        shell: /usr/bin/bash -e {0}
+
+
+  build:
+    name: Construction
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'push' && github.ref_type == 'tag')
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installation des dépendances JavaScript
+        run:  npm install
+
+      - name: Build
+        run: npm run build
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -28,8 +77,8 @@ jobs:
       - name: Installation des dépendances JavaScript
         run:  npm install
 
-      - name: Lint du fichier index.js
-        run:  npm run lint-index
+      - name: Lint du fichier addition.js
+        run:  npm run lint-addition
 
   test-addition:
     name: Test de addition.js
@@ -49,3 +98,15 @@ jobs:
 
       - name: Test
         run: npm test
+        
+      - name: Definition du statut GitHub
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "Le test a été réussi"
+          else
+            echo "Le test a échoué"
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

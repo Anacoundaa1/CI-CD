@@ -1,18 +1,19 @@
 {
-  "name": "ci-cd",
+  "name": "ci-cd-brevet-benalia",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Tp de CI/CD",
+  "main": "src/addition.js",
   "scripts": {
-    "lint-index": "jshint index.js",
-    "lint-test": "jshint ndex.js",
-    "test": "jest"
+    "lint-addition": "jshint src/addition.js",
+    "lint-test": "jshint test/test.js",
+    "test": "jest",
+    "build": "mkdir -p dist && cp -r src/* dist/"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "jshint": "^2.13.6",
     "supertest": "^6.3.3"
   },
-  "author": "",
+  "author": "BENALIA Mohamed / BREVET Bastien",
   "license": "ISC"
 }
