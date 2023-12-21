@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        env:
+          GIT_ASKPASS: echo
 
       - name: Set version 
         run: |
