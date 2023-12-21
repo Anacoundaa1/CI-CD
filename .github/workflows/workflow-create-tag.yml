@@ -13,12 +13,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-     - name: Set version
+     - name: Set version 
         id: set_version
         run: |
           # Récupérer la dernière version du dernier tag (si elle existe)
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
-          
+
           # Extraire la version à partir du tag
           LAST_VERSION=$(echo "$LAST_TAG" | sed 's/v//'   
           # Diviser la version en parties
@@ -27,7 +27,7 @@ jobs:
           MINOR="${VERSION_PARTS[1]}"
           PATCH="${VERSION_PARTS[2]}    
           ((PATCH=PATCH+1))
-          
+
           TAG_VERSION="$MAJOR.$MINOR.$PATCH"
           echo "TAG_VERSION: $TAG_VERSION   
           echo "$TAG_VERSION" > version.txt
