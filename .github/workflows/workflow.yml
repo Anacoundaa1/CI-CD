@@ -23,29 +23,15 @@ jobs:
 
       - name: Set version
         run: |
-          LAST_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          if [ -z "$LAST_TAG" ]; then
-            LAST_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%Y%m%d%H%M%S')
-            TAG_VERSION="1.0.0-$LAST_COMMIT_DATE"
-          else
-            IFS='.' read -ra VERSION_PARTS <<< "$LAST_TAG"
-            MAJOR="${VERSION_PARTS[0]}"
-            MINOR="${VERSION_PARTS[1]}"
-            PATCH="${VERSION_PARTS[2]}"
-            ((PATCH++))
-            TAG_VERSION="$MAJOR.$MINOR.$PATCH"
-          fi
-          echo "LAST_TAG: $LAST_TAG"
+          # Récupérer le hash court du commit
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          
+          # Créer un tag basé sur la date et le hash du commit
+          TAG_VERSION="1.0.0-$COMMIT_HASH"
+          
           echo "TAG_VERSION: $TAG_VERSION"
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
 
-      - name: Create Tag
-        if: success()
-        run: git tag -a $TAG_VERSION -m "Auto-generated tag for version $TAG_VERSION"
-
-      - name: Push Tag
-        if: success()
-        run: git push origin $TAG_VERSION
 
   build:
     name: Construction
