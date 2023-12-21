@@ -33,17 +33,13 @@ jobs:
           MINOR="${VERSION_PARTS[1]}"
           PATCH="${VERSION_PARTS[2]}"
 
-          echo "$VERSION_PARTS[0]"
-          echo "$VERSION_PARTS[1]"
-          echo "$VERSION_PARTS[2]"
           echo "$MAJOR"
           echo "$MINOR"
           echo "$PATCH"
 
 
           
-          # Incrémenter le PATCH
-          ((PATCH++))
+          ((PATCH=PATCH+1))
 
           echo "$PATCH"
           
